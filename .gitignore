@@ -1,0 +1,13 @@
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+out/
+*.iws
+*.iml
+.idea/
+.vscode/
+
+# Herramientas de IA (Claude Code, MCP) — no deben verse en el repo del curso
+.claude/
+.mcp.json
+.browser-sessions/
