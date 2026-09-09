@@ -1,9 +1,13 @@
 [versions]
 sonarqube = "4.4.1.3373"
 junit = "4.13.2"
+springBoot = "4.1.1"
+springDependencyManagement = "1.1.7"
 
 [libraries]
 junit = { module = "junit:junit", version.ref = "junit" }
 
 [plugins]
 sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
+springBoot = { id = "org.springframework.boot", version.ref = "springBoot" }
+springDependencyManagement = { id = "io.spring.dependency-management", version.ref = "springDependencyManagement" }
