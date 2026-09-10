@@ -3,6 +3,10 @@
    <configuration>
       <verify-metadata>true</verify-metadata>
       <verify-signatures>false</verify-signatures>
+      <trusted-artifacts>
+         <trust file=".*-sources[.]jar" regex="true" reason="Artefactos de codigo fuente solicitados por el IDE (ir a definicion / ver fuente). No se compilan ni se ejecutan como parte del build, por lo que no forman parte de la cadena de suministro ejecutable. Los jars y poms reales de compilacion y runtime siguen verificados por checksum SHA-256 en la seccion components."/>
+         <trust file=".*-javadoc[.]jar" regex="true" reason="Artefactos de documentacion solicitados por el IDE. Mismo criterio que los -sources.jar: material de solo lectura, no participa en compilacion ni ejecucion."/>
+      </trusted-artifacts>
    </configuration>
    <components>
       <component group="biz.aQute.bnd" name="biz.aQute.bnd.annotation" version="7.1.0">
