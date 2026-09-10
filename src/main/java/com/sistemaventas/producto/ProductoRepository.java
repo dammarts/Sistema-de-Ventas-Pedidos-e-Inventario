@@ -5,7 +5,7 @@ import java.util.Optional;
 
 /**
  * Contrato de persistencia de Producto.
- * TODO: reemplazar la implementación en memoria por Spring Data JPA + PostgreSQL.
+ * Pendiente (pospuesto a propósito): reemplazar la implementación en memoria por Spring Data JPA + PostgreSQL.
  */
 public interface ProductoRepository {
 

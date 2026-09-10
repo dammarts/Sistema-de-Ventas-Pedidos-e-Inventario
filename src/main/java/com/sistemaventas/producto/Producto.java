@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 /**
  * Entidad de dominio Producto.
- * TODO: anotar como @Entity (JPA) cuando se conecte PostgreSQL.
+ * Pendiente (pospuesto a propósito): anotar como @Entity (JPA) cuando se conecte PostgreSQL.
  */
 public class Producto {
 

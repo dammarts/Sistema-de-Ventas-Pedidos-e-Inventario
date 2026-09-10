@@ -41,8 +41,9 @@ public class ProductoStepDefinitions {
 
     @Cuando("intento registrar un producto llamado {string} con precio {int} y stock {int}")
     public void intento_registrar_un_producto_llamado_con_precio_y_stock(String nombre, int precio, int stock) {
+        BigDecimal precioDecimal = BigDecimal.valueOf(precio);
         try {
-            productoService.crear(nombre, nombre, BigDecimal.valueOf(precio), stock);
+            productoService.crear(nombre, nombre, precioDecimal, stock);
             fail("Se esperaba que la creación del producto fallara por precio inválido");
         } catch (ReglaNegocioException ex) {
             errorCapturado = ex;

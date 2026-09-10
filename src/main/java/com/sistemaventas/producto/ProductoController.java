@@ -1,7 +1,6 @@
 package com.sistemaventas.producto;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,7 +18,7 @@ public class ProductoController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Producto crear(@RequestBody ProductoRequest request) {
-        return productoService.crear(request.getNombre(), request.getDescripcion(), request.getPrecio(), request.getStock());
+        return productoService.crear(request.nombre(), request.descripcion(), request.precio(), request.stock());
     }
 
     @GetMapping
@@ -34,7 +33,7 @@ public class ProductoController {
 
     @PutMapping("/{id}")
     public Producto actualizar(@PathVariable Long id, @RequestBody ProductoRequest request) {
-        return productoService.actualizar(id, request.getNombre(), request.getDescripcion(),
-                request.getPrecio(), request.getStock(), request.getEstado());
+        return productoService.actualizar(id, request.nombre(), request.descripcion(),
+                request.precio(), request.stock(), request.estado());
     }
 }

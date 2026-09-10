@@ -6,6 +6,7 @@ pitestPlugin = "1.15.0"
 pitestJunit5 = "1.2.1"
 junitBom = "5.10.0"
 cucumber = "7.18.0"
+jacoco = "0.8.12"
 
 [libraries]
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junitBom" }

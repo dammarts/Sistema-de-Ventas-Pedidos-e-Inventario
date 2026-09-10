@@ -1,5 +1,6 @@
 plugins {
     id("java")
+    id("jacoco")
     alias(libs.plugins.springBoot)
     alias(libs.plugins.springDependencyManagement)
     alias(libs.plugins.sonarqube)
@@ -23,18 +24,19 @@ repositories {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
 
+    // Dependencias agrupadas por destino (regla kotlin:S6629): todo lo de
+    // testImplementation junto, luego testRuntimeOnly, luego pitest.
     // JUnit 5 (Jupiter) - reemplaza JUnit 4 según el ejemplo del profesor
     testImplementation(platform(libs.junit.bom))
     testImplementation(libs.junit.jupiter)
-    testRuntimeOnly(libs.junit.platform.launcher)
-
-    // PIT (mutation testing)
-    pitest(libs.pitest.junit5.plugin)
-
     // Cucumber (pruebas de aceptación BDD)
     testImplementation(libs.cucumber.java)
     testImplementation(libs.cucumber.junit.platform.engine)
     testImplementation(libs.junit.platform.suite)
+    testRuntimeOnly(libs.junit.platform.launcher)
+
+    // PIT (mutation testing)
+    pitest(libs.pitest.junit5.plugin)
 }
 
 sonar {
@@ -45,6 +47,29 @@ sonar {
         // Token leído de la variable de entorno SONARQUBE_TOKEN (setx),
         // nunca queda escrito en texto plano en este archivo ni en git.
         property("sonar.token", System.getenv("SONARQUBE_TOKEN") ?: "")
+        // Reporte XML de JaCoCo (unitarios + aceptación combinados, ver jacocoTestReport).
+        property("sonar.coverage.jacoco.xmlReportPaths",
+            layout.buildDirectory.file("reports/jacoco/test/jacocoTestReport.xml").get().asFile.path)
+    }
+}
+
+jacoco {
+    toolVersion = libs.versions.jacoco.get()
+}
+
+// El reporte agregado de JaCoCo combina la ejecución de los tests unitarios
+// (tasks.test) y de aceptación (acceptanceTest) para que la cobertura que ve
+// SonarQube refleje ambas suites, no solo la unitaria.
+tasks.jacocoTestReport {
+    dependsOn(tasks.test, tasks.named("acceptanceTest"))
+    executionData.setFrom(
+        fileTree(layout.buildDirectory.dir("jacoco")) {
+            include("*.exec")
+        }
+    )
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
     }
 }
 
@@ -67,6 +92,7 @@ tasks.test {
     useJUnitPlatform {
         excludeEngines("cucumber", "junit-platform-suite")
     }
+    finalizedBy(tasks.jacocoTestReport)
 }
 
 // Corre solo las pruebas de aceptación en Cucumber (features en
@@ -82,4 +108,5 @@ tasks.register<Test>("acceptanceTest") {
     classpath = sourceSets["test"].runtimeClasspath
     include("**/CucumberAcceptanceSuite.class")
     useJUnitPlatform()
+    finalizedBy(tasks.jacocoTestReport)
 }
