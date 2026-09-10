@@ -1,19 +1,19 @@
 package com.sistemaventas.producto;
 
 import com.sistemaventas.shared.ReglaNegocioException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ProductoServiceTest {
+class ProductoServiceTest {
 
     private final ProductoService productoService = new ProductoService(new InMemoryProductoRepository());
 
     @Test
-    public void deberiaCrearProductoConDatosValidos() {
+    void deberiaCrearProductoConDatosValidos() {
         Producto producto = productoService.crear("Mouse", "Mouse inalámbrico", new BigDecimal("50000"), 10);
 
         assertEquals("Mouse", producto.getNombre());
@@ -21,13 +21,13 @@ public class ProductoServiceTest {
     }
 
     @Test
-    public void deberiaRechazarPrecioMenorOIgualACero() {
+    void deberiaRechazarPrecioMenorOIgualACero() {
         assertThrows(ReglaNegocioException.class,
                 () -> productoService.crear("Mouse", "Mouse inalámbrico", BigDecimal.ZERO, 10));
     }
 
     @Test
-    public void deberiaLanzarErrorSiProductoNoExiste() {
+    void deberiaLanzarErrorSiProductoNoExiste() {
         assertThrows(ReglaNegocioException.class, () -> productoService.obtenerPorId(999L));
     }
 }
