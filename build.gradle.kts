@@ -34,6 +34,7 @@ dependencies {
     // Cucumber (pruebas de aceptación BDD)
     testImplementation(libs.cucumber.java)
     testImplementation(libs.cucumber.junit.platform.engine)
+    testImplementation(libs.junit.platform.suite)
 }
 
 sonar {
@@ -58,16 +59,27 @@ pitest {
 }
 
 tasks.test {
-    useJUnitPlatform()
+    // Cucumber vive en el mismo sourceSet de test (comparte classpath con los
+    // unitarios), así que se excluyen explícitamente sus dos motores para que
+    // esta task corra solo JUnit Jupiter: el motor "cucumber" (que si no se
+    // excluye auto-descubre los .feature del classpath sin pasar por la suite)
+    // y "junit-platform-suite" (que ejecutaría CucumberAcceptanceSuite).
+    useJUnitPlatform {
+        excludeEngines("cucumber", "junit-platform-suite")
+    }
 }
 
-// Corre solo las pruebas de aceptación en Cucumber, separadas de los tests unitarios.
-// Todavía no hay archivos .feature ni step definitions - se agregan cuando el
-// profesor defina los escenarios concretos, o al atacar Pedido/Inventario.
+// Corre solo las pruebas de aceptación en Cucumber (features en
+// src/test/resources/features, step definitions y suite en
+// com.sistemaventas.producto.acceptance), separadas de los tests unitarios.
+// Se restringe la selección de clases a la propia suite: así el motor
+// "junit-platform-suite" es el único que dispara escenarios de Cucumber y
+// JUnit Jupiter no encuentra nada que ejecutar en esta task.
 tasks.register<Test>("acceptanceTest") {
-    useJUnitPlatform()
     description = "Corre las pruebas de aceptación en Cucumber."
     group = "verification"
     testClassesDirs = sourceSets["test"].output.classesDirs
     classpath = sourceSets["test"].runtimeClasspath
+    include("**/CucumberAcceptanceSuite.class")
+    useJUnitPlatform()
 }
